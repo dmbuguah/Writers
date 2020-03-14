@@ -1,26 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React,  { Component, Fragment } from 'react'
+import { BrowserRouter, Link, Route, Switch } from 'react-router-dom'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Writers from './Components/Writers'
+import {NotFound} from './Components/Errors'
+
+export default class extends Component {
+  state = {
+      writers: []
+  }
+
+  async componentDidMount() {
+    const writers = await (await fetch('http://localhost:3004/writers?_embed=texts')).json()
+    this.setState({ writers })
+  }
+  render() {
+    const { writers } = this.state
+
+    return <BrowserRouter>
+      <Fragment>
+        <ul>
+          <li>
+            <Link to="/">
+              Home
+            </Link>
+          </li>
+          <li>
+            <Link to="/writers">
+              Writers
+            </Link>
+          </li>
+        </ul>
+
+        <hr/>
+        <Switch>
+          <Route exact path="/" render={() =><div>Home</div>}/>
+          <Route path="/writers" render={
+            props => <Writers {...props} writers={writers}/>}/>
+          <Route component={NotFound}/>
+        </Switch>
+      </Fragment>
+      </BrowserRouter>
+  }
 }
-
-export default App;

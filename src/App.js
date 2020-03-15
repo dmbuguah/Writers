@@ -1,8 +1,9 @@
 import React,  { Component, Fragment } from 'react'
-import { BrowserRouter, Link, Route, Switch } from 'react-router-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 
 import Writers from './Components/Writers'
 import {NotFound} from './Components/Errors'
+import Layout from './Components/Layout'
 
 export default class extends Component {
   state = {
@@ -17,28 +18,14 @@ export default class extends Component {
     const { writers } = this.state
 
     return <BrowserRouter>
-      <Fragment>
-        <ul>
-          <li>
-            <Link to="/">
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link to="/writers">
-              Writers
-            </Link>
-          </li>
-        </ul>
-
-        <hr/>
+      <Layout writers={writers}>
         <Switch>
           <Route exact path="/" render={() =><div>Home</div>}/>
           <Route path="/writers" render={
             props => <Writers {...props} writers={writers}/>}/>
           <Route component={NotFound}/>
         </Switch>
-      </Fragment>
+      </Layout>
       </BrowserRouter>
   }
 }
